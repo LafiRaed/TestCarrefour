@@ -35,7 +35,7 @@ public class FileRW  implements  FileRWInterf{
      * @param filePath
      * @throws IOException
      */
-    public void splitTransaction(String filePath) throws  IOException {
+    public void splitTransaction(String filePath, String outputPath) throws  IOException {
 
         Map<String, FileWriter>  splitTra = new HashMap<String,FileWriter>();
         String line;
@@ -47,7 +47,7 @@ public class FileRW  implements  FileRWInterf{
 
 
             if(splitTra.get(arr[2]) == null)
-                splitTra.put(arr[2],new FileWriter("/home/lafi/IdeaProjects/TestCarrefour/newData/1200Mag/"+ arr[2] +".data"));
+                splitTra.put(arr[2],new FileWriter(outputPath + arr[2] +".data")); // "/home/lafi/IdeaProjects/TestCarrefour/newData/1200Mag/"
 
             splitTra.get(arr[2]).write(arr[3]+"|"+arr[4]);
             splitTra.get(arr[2]).append("\n");

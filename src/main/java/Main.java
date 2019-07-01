@@ -36,20 +36,38 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
 
+
+        if(args.length != 5){
+            System.out.println("missed arguments");
+            System.exit(0);
+        }
+
+
+
+        // Result Dir
+        String transPath = args[0]; //"/home/lafi/IdeaProjects/newData/transaction/transactions_20190613.data";
+        String refDir = args[1];//"/home/lafi/IdeaProjects/newData/ref/";
+
+        String outputPath = args[2];//"/home/lafi/IdeaProjects/newData/1200Mag/";
+
+        String topHundredDir = args[3]; //"/home/lafi/IdeaProjects/newData/topHundredMag/";
+        String topHundredCa = args[4];//"/home/lafi/IdeaProjects/newData/topHundredCA/";
+
+
+
+
         String currentInit = getCurrentTimeUsingDate();
         //GenerateData.generate();
-        String transPath = "/home/lafi/IdeaProjects/TestCarrefour/newData/transaction/transactions_20190613.data";
+
 
         // Split Transaction file for each Magasain
         Map<String, FileWriter> splitTra = new HashMap<String, FileWriter>();
         FileRW fileRW = new FileRW();
 
-        fileRW.splitTransaction(transPath);
+        fileRW.splitTransaction(transPath, outputPath);
 
 
-        // Result Dir
-        String topHundredDir = "/home/lafi/IdeaProjects/TestCarrefour/newData/topHundredMag/";
-        String topHundredCa = "/home/lafi/IdeaProjects/TestCarrefour/newData/topHundredCA/";
+
         Map<String, Double> sales = new HashMap<>();
         // First Question
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.FRENCH);
@@ -59,8 +77,8 @@ public class Main {
 
         // Get Transaction files for each Mag
 
-        List<String> transactionByMag = fileRW.listFileName("/home/lafi/IdeaProjects/TestCarrefour/newData/1200Mag/");
-        String refDir = "/home/lafi/IdeaProjects/TestCarrefour/newData/ref/";
+        List<String> transactionByMag = fileRW.listFileName(outputPath);
+
 
 
         // For each Mag Get Top 100 product starting from "2019/06/14"
@@ -80,9 +98,9 @@ public class Main {
                         collect(Collectors.
                                 toMap(Map.Entry::getKey,Map.Entry::getValue,
                                         (oldValue, newValue)->oldValue,LinkedHashMap::new));
-                System.out.println(trans + System.lineSeparator());
+                System.out.println("Transaction:" + trans + System.lineSeparator());
                 System.out.println(refByMag + System.lineSeparator());
-                System.out.println(topHundredProduct + System.lineSeparator());
+                System.out.println("Top 100 product:" + topHundredProduct + System.lineSeparator());
                 fileRW.writeFileToDisk(topHundredProduct,topHundredDir + "top_100_ventes_" + magID +"_201906" + Integer.toString(i) + ".data" );
 
                 sales.put(magID,sales.get(magID) + topProduct.values().stream().reduce(0.0,Double::sum));
@@ -101,7 +119,7 @@ public class Main {
                 sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).
                 limit(100).
                 collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue,(oldValue, newValue)->oldValue,LinkedHashMap::new));
-
+        System.out.println("Top 100 CA :" + sales);
         // Write Top CA
         for(String key: sales.keySet()){
             Writer writer = new FileWriter(topHundredCa + "top_100_ca_" + key + "_20190613-J7.data");

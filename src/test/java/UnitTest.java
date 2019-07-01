@@ -32,7 +32,7 @@ public class UnitTest {
     @Test (expected = IOException.class)
 
     public void testSplitTransaction() throws IOException {
-        tester.splitTransaction("");
+        tester.splitTransaction("","");
     }
 
     @Test
