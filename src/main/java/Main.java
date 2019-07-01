@@ -6,6 +6,7 @@
 
 
 
+import org.carrefour.Generator.GenerateData;
 import org.carrefour.dao.FileRW;
 import org.carrefour.services.TopSaleByStore;
 
@@ -36,6 +37,7 @@ public class Main {
     public static void main(String[] args) throws IOException, ParseException {
 
         String currentInit = getCurrentTimeUsingDate();
+        //GenerateData.generate();
         String transPath = "/home/lafi/IdeaProjects/TestCarrefour/newData/transaction/transactions_20190613.data";
 
         // Split Transaction file for each Magasain
@@ -78,6 +80,9 @@ public class Main {
                         collect(Collectors.
                                 toMap(Map.Entry::getKey,Map.Entry::getValue,
                                         (oldValue, newValue)->oldValue,LinkedHashMap::new));
+                System.out.println(trans + System.lineSeparator());
+                System.out.println(refByMag + System.lineSeparator());
+                System.out.println(topHundredProduct + System.lineSeparator());
                 fileRW.writeFileToDisk(topHundredProduct,topHundredDir + "top_100_ventes_" + magID +"_201906" + Integer.toString(i) + ".data" );
 
                 sales.put(magID,sales.get(magID) + topProduct.values().stream().reduce(0.0,Double::sum));
