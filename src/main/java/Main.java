@@ -52,8 +52,9 @@ public class Main {
 
         String topHundredDir = args[3]; //"/home/lafi/IdeaProjects/newData/topHundredMag/";
         String topHundredCa = args[4];//"/home/lafi/IdeaProjects/newData/topHundredCA/";
-
-
+        //String date = args[5];
+        String[] separated = transPath.split("_");
+        String  date = separated[1].substring(separated[1].lastIndexOf("/") + 1).replaceFirst("[.][^.]+$", "");
 
 
         String currentInit = getCurrentTimeUsingDate();
@@ -70,10 +71,10 @@ public class Main {
 
         Map<String, Double> sales = new HashMap<>();
         // First Question
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.FRENCH);
+        //SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.FRENCH);
 
-        String dateInString = "2019/06/14";
-        Date date = formatter.parse(dateInString);
+        //String dateInString = "2019/06/14";
+        //Date date = formatter.parse(dateInString);
 
         // Get Transaction files for each Mag
 
@@ -89,8 +90,8 @@ public class Main {
             sales.put(magID,0.);
             //System.out.println("Top 100 product for the mag:" + magID);
             for(int i = 13; i < 20; i++ ){
-                String refByMag = refDir + "/reference_prod_" + magID + "_201906" + Integer.toString(i) + ".data";
-
+                //String refByMag = refDir + "/reference_prod_" + magID +  "_201906" + date.substring(0,5)  + Integer.toString(i) + ".data";
+                String refByMag = refDir + "/reference_prod_" + magID +  "_" + date.substring(0,6)  + Integer.toString(i) + ".data";
                 Map<String,Double> topProduct = topSaleByStore.getTopProduct(trans, refByMag);
                 Map<String,Double> topHundredProduct = topProduct.entrySet().
                         stream().
@@ -101,7 +102,7 @@ public class Main {
                 System.out.println("Transaction:" + trans + System.lineSeparator());
                 System.out.println(refByMag + System.lineSeparator());
                 System.out.println("Top 100 product:" + topHundredProduct + System.lineSeparator());
-                fileRW.writeFileToDisk(topHundredProduct,topHundredDir + "top_100_ventes_" + magID +"_201906" + Integer.toString(i) + ".data" );
+                fileRW.writeFileToDisk(topHundredProduct,topHundredDir + "top_100_ventes_" + magID +"_" + date.substring(0,5) + Integer.toString(i) + ".data" );
 
                 sales.put(magID,sales.get(magID) + topProduct.values().stream().reduce(0.0,Double::sum));
                 //System.out.println(topHundredProduct.values());
@@ -122,7 +123,7 @@ public class Main {
         System.out.println("Top 100 CA :" + sales);
         // Write Top CA
         for(String key: sales.keySet()){
-            Writer writer = new FileWriter(topHundredCa + "top_100_ca_" + key + "_20190613-J7.data");
+            Writer writer = new FileWriter(topHundredCa + "top_100_ca_" + key + "_" + date + "-J7.data");
             writer.write(sales.get(key).toString() + System.lineSeparator());
             writer.flush();
             writer.close();
